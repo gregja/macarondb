@@ -1,0 +1,9 @@
+MacaronDB Project - Changelog
+
+
+Version 1.1 - 2012-05-11
+
+- création classe DBForgeActiveRecord
+
+
+
