@@ -2,7 +2,7 @@
 //require_once ('....../macaronDB/DBActiveRecord.php');
 
 /*
- * Code source SQL pour création de la table PIECES sur DB2
+ * Code source SQL pour crï¿½ation de la table PIECES sur DB2
 CREATE TABLE YOUR_BASE.PIECES ( 
 	ID INTEGER
 		GENERATED ALWAYS AS IDENTITY
@@ -21,7 +21,7 @@ CREATE TABLE YOUR_BASE.PIECES (
 CREATE INDEX YOUR_BASE.PIECES01 ON YOUR_BASE.PIECES (ID) ;
 CREATE INDEX YOUR_BASE.PIECES02 ON YOUR_BASE.PIECES (NOM, ID) ;
 
-COMMENT ON TABLE YOUR_BASE.PIECES IS 'Liste des Pièces' ;
+COMMENT ON TABLE YOUR_BASE.PIECES IS 'Liste des Piï¿½ces' ;
 
 */
 
@@ -29,29 +29,29 @@ class PieceModel extends DBActiveRecord implements intDBActiveRecord {
 	
 	public function __construct($base) {
 		$this->table_name = 'PIECES';  // nom de la table SQL
-		$this->schema_name = 'YOUR_BASE'; // nom du schéma SQL
+		$this->schema_name = 'YOUR_BASE'; // nom du schï¿½ma SQL
 		
 		// liste des colonnes de la table
 		$this->fields_name = array ('id', 'nom', 'prix', 'cre_date', 'cre_time', 
 				'cre_usid', 'upd_date', 'upd_time', 'upd_usid', 'statut' );
 				
 		$this->key_name = 'id'; // nom de la colonne "id"
-		$this->key_value = null; // valeur par défaut de la colonne "id" (avant utilisation de la méthode load() )
+		$this->key_value = null; // valeur par dï¿½faut de la colonne "id" (avant utilisation de la mï¿½thode load() )
 		
-		// nom de la colonne "clé" d'un point de vue utilisateur (peut être la colonne "id" ou un "identifiant manuel")
+		// nom de la colonne "clï¿½" d'un point de vue utilisateur (peut ï¿½tre la colonne "id" ou un "identifiant manuel")
 		$this->user_key = $this->key_name ;		
 		
 		// nom de la colonne contenant la description principale (utile pour l'affichage de liste dans un module de type "CRUD")
 		$this->description_field = 'nom';
 		
-		// liste des champs mis à jour automatiquement lors d'un Update SQL
+		// liste des champs mis ï¿½ jour automatiquement lors d'un Update SQL
         $this->autofill_on_update = array(
         			'upd_date'=>'*date', 
         			'upd_time'=>'*time',
         			'upd_usid'=>'*user'
         ) ;
         
-        // liste des champs mis à jour automatiquement lors d'un INSERT SQL
+        // liste des champs mis ï¿½ jour automatiquement lors d'un INSERT SQL
         $this->autofill_on_insert = array(
         			'cre_date'=>'*date', 
         			'cre_time'=>'*time',
@@ -59,17 +59,16 @@ class PieceModel extends DBActiveRecord implements intDBActiveRecord {
         ) ;
 
         /*
-         * Définition des champs d'un formulaire de mise à jour pour un module de type CRUD
-         * Le contenu de $this->form_elements a été conçu pour permettre la génération 
+         * DÃ©finition des champs d'un formulaire de mise Ã  jour pour un module de type CRUD
+         * Le contenu de $this->form_elements a Ã©tÃ© conÃ§u pour permettre la gÃ©nÃ©ration 
          * automatique de formulaire dans un module de type CRUD, en s'appuyant sur la 
-         * classe CrudManager2 (conçue pour générer un formulaire en s'appuyant sur le 
+         * classe CrudManager2 (conÃ§ue pour gÃ©nÃ©rer un formulaire en s'appuyant sur le 
          * projet PEAR::HtmlQuickform 2). La classe CrudManager2 n'est pour l'instant
-         * pas fournie avec MacaronDB, car elle nécessite des connaissances avancées dans
-         * la mise en oeuvre de PEAR::HtmlQuickform 2, ce qui implique la rédaction d'une
-         * documentation spécifique (en cours de préparation). La classe CrudManager2 
-         * sera intégrée dans MacaronDB dans un très proche avenir.
-         * Pour tout renseignement, prière de contacter Six-Axe.
-         * 	
+         * pas fournie avec MacaronDB, car elle nÃ©cessite des connaissances avancÃ©es dans
+         * la mise en oeuvre de PEAR::HtmlQuickform 2, ce qui implique la rÃ©daction d'une
+         * documentation spÃ©cifique (en cours de prÃ©paration). La classe CrudManager2 
+         * sera intÃ©grÃ©e dans MacaronDB dans un trÃ¨s proche avenir.
+         * 		
         $this->form_elements = array();
         $this->form_elements ['nom']= array(
         		'key' => true ,
