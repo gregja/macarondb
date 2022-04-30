@@ -1,4 +1,4 @@
-# macarondb
+# MacaronDB
 
 Bienvenue dans le projet MacaronDB.
 
