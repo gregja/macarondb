@@ -17,4 +17,10 @@ Parmi les points à améliorer :
 
 Bref, pour remettre ce projet au goût du jour, il y a un peu de boulot... :)
 
+La documentation de ce projet se trouve dans le dépôt suivant :
 
+https://github.com/gregja/phpLibrary4i
+
+Pour compléter votre information sur l'écosystème IBM i, et en particulier sur la base de données DB2 for i (et ses nouveautés), je vous invite à vous reporter à mon autre dépôt Github, dédié à ce sujet :
+
+https://github.com/gregja/SQLMasters
