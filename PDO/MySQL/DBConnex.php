@@ -2,30 +2,25 @@
 /**
  * This source file is subject to the new BSD license that is bundled
  * with this package in the file LICENSE.txt.
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to gregory_jarrige@yahoo.fr so we can send you a copy immediately.
  *
  * @category   MacaronDB
  * @package    DB
- * @copyright  Copyright (c) 2012-2015 Gregory Jarrige 
- * @author     Gregory Jarrige <gregory_jarrige@yahoo.fr>
  * @license    New BSD License
  * @version    DB/PDO/MySQL/DBConnex.php 2012-03-28 09:15:47
  */
 
 class PDO_MySQL_DBConnex {
-	
+
 	protected static $_instance;
-	
+
 	private function __construct() {
-	
+
 	}
-	
+
 	public static function getInstance($system, $user, $password, $options = array(), $persistent = false) {
 		$dsn_array = array ();
-		
-		// Préparation du DSN
+
+		// PrÃ©paration du DSN
 		$dsn_array [] = "mysql:host=$system";
 		if (is_array ( $options )) {
 			if (array_key_exists ( 'port', $options )) {
@@ -40,9 +35,9 @@ class PDO_MySQL_DBConnex {
 			}
 		}
 		$options_cnx = array(
-				// Permer d'éliminer les problèmes de bufférisation de requête qui apparaissent sur certains environnements LAMP.
+				// Permer d'Ã©liminer les problÃ©mes de buffÃ©risation de requÃªte qui apparaissent sur certains environnements LAMP.
 				PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => TRUE,
-				// Permet d'activer le mode Prepare/Execute qui par défaut est émulé par PDO (on se demande bien pourquoi d'ailleurs...)
+				// Permet d'activer le mode Prepare/Execute qui par dÃ©faut est Ã©mulÃ© par PDO (on se demande bien pourquoi d'ailleurs...)
 				PDO::ATTR_EMULATE_PREPARES => FALSE,
 		);
 		if ($persistent === true) {
@@ -55,13 +50,18 @@ class PDO_MySQL_DBConnex {
 			self::$_instance->setAttribute ( PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC );
 
 			if (isset($options ['DB2_ATTR_CASE'])) {
-				if (strtoupper($options ['DB2_ATTR_CASE']) == 'LOWER') {
+				$casse = strtoupper($options ['DB2_ATTR_CASE']);
+				if ($casse == 'LOWER') {
 					self::$_instance->setAttribute ( PDO::ATTR_CASE, PDO::CASE_LOWER );
 				} else {
-					self::$_instance->setAttribute ( PDO::ATTR_CASE, PDO::CASE_UPPER );
+					if ($casse == 'NATURAL') {
+						self::$_instance->setAttribute ( PDO::ATTR_CASE, PDO::CASE_NATURAL );
+					} else {
+						self::$_instance->setAttribute ( PDO::ATTR_CASE, PDO::CASE_UPPER );
+					}
 				}
 			}
-				
+
 			if (is_array ( $options ) && array_key_exists ( 'charset', $options )) {
 				$options ['charset'] = trim ( strtolower ( $options ['charset'] ) );
 				if ($options ['charset'] == 'utf8' || $options ['charset'] == 'utf-8') {
@@ -76,9 +76,8 @@ class PDO_MySQL_DBConnex {
 			error_log ( 'Erreur sur Exception ' . $e->getMessage () );
 			Throw new Exception ( $e->getMessage () );
 		}
-		
+
 		return self::$_instance;
 	}
 
 }
-	

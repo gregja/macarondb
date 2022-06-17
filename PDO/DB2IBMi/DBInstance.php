@@ -9,12 +9,10 @@
  *
  * @category   MacaronDB
  * @package    DB
- * @copyright  Copyright (c) 2012-2015 Gregory Jarrige 
- * @author     Gregory Jarrige <gregory_jarrige@yahoo.fr>
  * @license    New BSD License
  * @version    DB/PDO/DB2IBMi/DBInstance.php 2012-03-28 09:15:47
  *
- * Classe adaptée à l'ouverture d'une connexion bd avec PDO pour DB2 sur plateforme i5
+ * Classe adaptÃ©e Ã  l'ouverture d'une connexion bd avec PDO pour DB2 sur serveur IBM i
  */
 require_once 'DBInstanceInterface.php';
 
@@ -38,16 +36,16 @@ class PDO_DB2IBMi_DBInstance implements DBInstanceInterface {
         } else {
             $this->_persistent = false;
         }
-        // préparation du tableau des options au format attendu par le connecteur DB2
+        // prï¿½paration du tableau des options au format attendu par le connecteur DB2
         $this->_options = PDO_DB2IBMi_DBConnex::generate_config($options);
 
         try {
             $this->_dbinstance = PDO_DB2IBMi_DBConnex::getInstance($system, $user, $password, $this->_options, $this->_persistent);
         } catch (PDOException $e) {
-            error_log('FATAL ERROR : PDOException sur connexion DB dans la méthode ' . __METHOD__ . ' de la classe ' . __CLASS__);
+            error_log('FATAL ERROR : PDOException sur connexion DB dans la mï¿½thode ' . __METHOD__ . ' de la classe ' . __CLASS__);
             error_log('FATAL ERROR : ' . $e->getMessage());
         } catch (Exception $e) {
-            error_log('FATAL ERROR : Exception sur connexion DB dans la méthode ' . __METHOD__ . ' de la classe ' . __CLASS__);
+            error_log('FATAL ERROR : Exception sur connexion DB dans la mï¿½thode ' . __METHOD__ . ' de la classe ' . __CLASS__);
             error_log('FATAL ERROR : ' . $e->getMessage());
         }
 
@@ -61,8 +59,8 @@ class PDO_DB2IBMi_DBInstance implements DBInstanceInterface {
     }
 
     /*
-     * renvoie le séparateur SQL à utiliser en fonction du type de nommage déclaré
-     * ( nommage SQL => "."  ; ou nommage Système IBM i => "/" ) 
+     * renvoie le sï¿½parateur SQL ï¿½ utiliser en fonction du type de nommage dï¿½clarï¿½
+     * ( nommage SQL => "."  ; ou nommage Systï¿½me IBM i => "/" ) 
      */
 
     public function getSqlSeparator() {

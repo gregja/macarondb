@@ -8,12 +8,10 @@
  *
  * @category   MacaronDB
  * @package    DB
- * @copyright  Copyright (c) 2012-2015 Gregory Jarrige 
- * @author     Gregory Jarrige <gregory_jarrige@yahoo.fr>
  * @license    New BSD License
  * @version    DB/PDO/DB2IBMi/DBWrapper.php 2012-03-28 09:15:47
  * 
- * Wrapper Base de Données dédié au connecteur PDO pour DB2 for i
+ * Wrapper Base de DonnÃ©es dÃ©diÃ© au connecteur PDO pour DB2 for i
  */
 require_once 'DBWrapperInterface.php';
 require_once 'DBWrapperClassStd.php';
@@ -21,7 +19,7 @@ require_once 'DBWrapperClassStd.php';
 abstract class PDO_DB2IBMi_DBWrapper extends DBWrapperClassStd implements DBWrapperInterface {
 
 	/*
-	 * Technique de pagination spécifique à DB2 
+	 * Technique de pagination spÃ©cifique Ã  DB2 
 	 */
 	public static function getPagination($db, $sql, $args, $offset, $nbl_by_page, $order_by = '' ) { 
 
@@ -44,13 +42,13 @@ abstract class PDO_DB2IBMi_DBWrapper extends DBWrapperClassStd implements DBWrap
 		if ($order_by != '') {
 			$order_by = 'ORDER BY '.$order_by ;
 		}
-		// on recherche la position du 1er SELECT pour le compléter
+		// on recherche la position du 1er SELECT pour le complÃ©ter
 		$pos = stripos ( $sql, 'select' );
 		if ($pos !== false) {
 			$temp = 'select row_number() over ('.$order_by.') as rn, ';
 			$sql = substr_replace($sql, $temp, $pos, 6 ) ;		
 		} else {
-			// pagination impossible si requête ne contient pas un SELECT
+			// pagination impossible si requÃªte ne contient pas un SELECT
 			return false ;
 		}
 		$sql = <<<BLOC_SQL
@@ -60,7 +58,7 @@ select foo.* from (
 where foo.rn between ? and ?  
 BLOC_SQL;
 		/*
-		 * Ajout des paramètres du "between" dans le tableau des arguments transmis à la requête
+		 * Ajout des paramÃ¨tres du "between" dans le tableau des arguments transmis Ã  la requÃªte
 		 */
 		$args [] = $offset ;
 		$args [] = $limit_max ;
@@ -69,8 +67,8 @@ BLOC_SQL;
 	}
 	
     /*
-     * Méthode permettant de récupérer le dernier ID créé dans la BD
-     * Le dernier ID est soit l'ID interne DB2, soit une séquence DB2 dont le code est transmis en paramètre
+     * MÃ©thode permettant de rÃ©cupÃ©rer le dernier ID crÃ©Ã© dans la BD
+     * Le dernier ID est soit l'ID interne DB2, soit une sÃ©quence DB2 dont le code est transmis en paramÃ¨tre
      */
     public static function getLastInsertId($db, $sequence = '') {
     	$sequence = trim($sequence) ;
@@ -89,7 +87,7 @@ BLOC_SQL;
 	
 	/**
 	 * 
-	 * Retourne un tableau contenant la liste des attributs PDO supportés par le driver DB2
+	 * Retourne un tableau contenant la liste des attributs PDO supportÃ©s par le driver DB2
 	 * @param unknown_type $db
 	 */
 	public static function getInfoDatabase($db) {

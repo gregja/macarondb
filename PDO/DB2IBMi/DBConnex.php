@@ -3,14 +3,9 @@
 /**
  * This source file is subject to the new BSD license that is bundled
  * with this package in the file LICENSE.txt.
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to gregory_jarrige@yahoo.fr so we can send you a copy immediately.
  *
  * @category   MacaronDB
  * @package    DB
- * @copyright  Copyright (c) 2012-2015 Gregory Jarrige 
- * @author     Gregory Jarrige <gregory_jarrige@yahoo.fr>
  * @license    New BSD License
  * @version    DB/PDO/DB2IBMi/DBConnex.php 2012-03-28 09:15:47
  */
@@ -21,7 +16,7 @@ class PDO_DB2IBMi_DBConnex {
     protected static $_sql_separator = '.';
 
     private function __construct() {
-        
+
     }
 
     public static function getInstance($system, $user, $password, &$options = array(), $persistent = false) {
@@ -30,31 +25,32 @@ class PDO_DB2IBMi_DBConnex {
 
         if ($is_IBMi) {
             /*
-             * l'implémentation PDO_Ibm est incomplète, mais il est néanmoins intéressant de pouvoir la tester en déclarant 
-             * le DSN de cette façon :
+             * l'implÃ©mentation PDO_Ibm est incomplÃ©te, mais il est nÃ©anmoins intÃ©ressant de pouvoir la tester en dÃ©clarant
+             * le DSN de cette faÃ§on :
              */
             $dsn = 'ibm:' . $system;
         } else {
-            $dsn = 'odbc:DRIVER={iSeries Access ODBC Driver};SYSTEM=' . $system;
-            
-            // Attention à ne pas ajouter de ";" inutile à la fin d'un DSN, car PDO n'apprécie pas du tout
+            $dsn = 'odbc:DRIVER={IBM i Access ODBC Driver};SYSTEM=' . $system;
+
+            // Attention Ã  ne pas ajouter de ";" inutile Ã  la fin d'un DSN, car PDO n'apprÃ©cie pas du tout
             $dsn_temp = self::generate_dsn($options);
             if ($dsn_temp != '') {
                 $dsn .= ';' . $dsn_temp;
             }
+
         }
         /*
-         * Permet d'activer le mode Prepare/Execute qui par défaut est émulé par PDO (si le SGBD ne renvoie pas à PDO
-         * l'information comme quoi il gère lui même la préparation des requêtes)
-         * Ne sachant pas si le driver "iSeries Access ODBC Driver" renvoie cette information à PDO, la désactivation
-         * effectuée ici est une mesure préventive.
+         * Permet d'activer le mode Prepare/Execute qui par dÃ©faut est Ã©mulÃ© par PDO (si le SGBD ne renvoie pas Ã  PDO
+         * l'information comme quoi il gÃ©re lui mÃ©me la prÃ©paration des requÃªtes)
+         * Ne sachant pas si le driver "IBM i Access ODBC " renvoie cette information Ã  PDO, la dÃ©sactivation
+         * effectuÃ©e ici est une mesure prÃ©ventive.
          */
         $options_cnx = array(
             /*
-             * Permet d'activer le mode Prepare/Execute qui par défaut est émulé par PDO (si le SGBD ne renvoie pas à PDO
-             * l'information comme quoi il gère lui même la préparation des requêtes)
-             * Ne sachant pas si le driver "iSeries Access ODBC Driver" renvoie cette information à PDO, la désactivation 
-             * effectuée ici est une mesure préventive, ou de précaution.
+             * Permet d'activer le mode Prepare/Execute qui par dÃ©faut est Ã©mulÃ© par PDO (si le SGBD ne renvoie pas Ã  PDO
+             * l'information comme quoi il gÃ©re lui mÃ©me la prÃ©paration des requÃªtes)
+             * Ne sachant pas si le driver "IBM i Access ODBC " renvoie cette information Ã  PDO, la dÃ©sactivation
+             * effectuÃ©e ici est une mesure prÃ©ventive, ou de prÃ©caution.
              */
             PDO::ATTR_EMULATE_PREPARES => FALSE,
         );
@@ -64,12 +60,12 @@ class PDO_DB2IBMi_DBConnex {
         try {
             self::$_instance = new PDO($dsn, $user, $password, $options_cnx);
         } catch (PDOException $e) {
-            error_log('FATAL ERROR : PDOException sur connexion DB dans la méthode ' . __METHOD__ . ' de la classe ' . __CLASS__);
+            error_log('FATAL ERROR : PDOException sur connexion DB dans la mÃ©thode ' . __METHOD__ . ' de la classe ' . __CLASS__);
             error_log('FATAL ERROR : DSN= ' . $dsn);
             error_log('FATAL ERROR : ' . $e->getMessage());
             return false ;
         } catch (Exception $e) {
-            error_log('FATAL ERROR : Exception sur connexion DB dans la méthode ' . __METHOD__ . ' de la classe ' . __CLASS__);
+            error_log('FATAL ERROR : Exception sur connexion DB dans la mÃ©thode ' . __METHOD__ . ' de la classe ' . __CLASS__);
             error_log('FATAL ERROR : DSN= ' . $dsn);
             error_log('FATAL ERROR : ' . $e->getMessage());
             return false ;
@@ -78,26 +74,26 @@ class PDO_DB2IBMi_DBConnex {
         if (self::$_instance instanceof PDO) {
             self::$_instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             self::$_instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-            if (isset($options ['DB2_ATTR_CASE'])) {
-                if (strtoupper($options ['DB2_ATTR_CASE']) == 'LOWER') {
-                    self::$_instance->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
-                } else {
-                    self::$_instance->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
-                }
-            }
-        } else {
-            error_log('FATAL ERROR : Exception sur connexion DB dans la méthode ' . __METHOD__ . ' de la classe ' . __CLASS__);
-            error_log('FATAL ERROR : DSN= ' . $dsn);
-            error_log('FATAL ERROR : ' . $e->getMessage());
-            return false ;
+			if (isset($options ['DB2_ATTR_CASE'])) {
+				$casse = strtoupper($options ['DB2_ATTR_CASE']);
+				if ($casse == 'LOWER') {
+					self::$_instance->setAttribute ( PDO::ATTR_CASE, PDO::CASE_LOWER );
+				} else {
+					if ($casse == 'NATURAL') {
+						self::$_instance->setAttribute ( PDO::ATTR_CASE, PDO::CASE_NATURAL );
+					} else {
+                        // $casse == 'UPPER'
+						self::$_instance->setAttribute ( PDO::ATTR_CASE, PDO::CASE_UPPER );
+					}
+				}
+			}
         }
 
         return self::$_instance;
     }
 
     /*
-     * Paramètres de connexion DB2 i5 transformés en DSN 
+     * paramÃ¨tres de connexion DB2 i5 transformÃ©s en DSN
      * Source documentaire pour PDO :
      *  http://publib.boulder.ibm.com/infocenter/iseries/v5r4/index.jsp?topic=%2Frzaik%2Fconnectkeywords.htm
      * Source documentaire pour ODBC :
@@ -112,36 +108,36 @@ class PDO_DB2IBMi_DBConnex {
             $options = array();
         }
         /*
-         * si $options ['i5_libl'] est un tableau, alors on le transforme en chaîne (postes séparés par un blanc pour db2_connect)
-         * tant qu'on ne sait pas si $options ['i5_libl'] est un tableau contenant plus d'une bibliothèque, on considère que
-         * c'est le mode DB2_I5_NAMING_OFF qui doit être retenu comme option par défaut (syntaxe full SQL)
+         * si $options ['i5_libl'] est un tableau, alors on le transforme en chaÃ®ne (postes sÃ©parÃ©s par un blanc pour db2_connect)
+         * tant qu'on ne sait pas si $options ['i5_libl'] est un tableau contenant plus d'une bibliothÃ©que, on considÃ¨re que
+         * c'est le mode DB2_I5_NAMING_OFF qui doit Ãªtre retenu comme option par dÃ©faut (syntaxe full SQL)
          */
         if (!isset($options ['i5_naming']) || !is_bool($options ['i5_naming'])) {
             $options ['i5_naming'] = false;
         }
 
         if (isset($options ['i5_libl']) && is_array($options ['i5_libl']) && count($options ['i5_libl']) > 0) {
-            // tableau à transformer en chaîne de caractères 
+            // tableau Ã  transformer en chaÃ®ne de caractÃ¨res
             $options ['i5_libl'] = implode(' ', $options ['i5_libl']);
         }
 
         /*
 
-          Valeurs définies pour le niveau d'isolation, pour le connecteur DB2_Connect :
+          Valeurs dÃ©finies pour le niveau d'isolation, pour le connecteur DB2_Connect :
           DB2_I5_TXN_NO_COMMIT = 1
           DB2_I5_TXN_READ_UNCOMMITTED = 2
           DB2_I5_TXN_READ_COMMITTED = 3
           DB2_I5_TXN_REPEATABLE_READ = 4
           DB2_I5_TXN_SERIALIZABLE = 5
 
-          Les valeurs peuvent être transmises au connecteur sous forme de chaîne de caractères :
+          Les valeurs peuvent Ãªtre transmises au connecteur sous forme de chaÃ®ne de caractÃ¨res :
           - No Commit = *NC ou *NONE ou NO_COMMIT
           - Uncommitted Read = *UR ou *CHG ou READ_UNCOMMITTED
           - Repeatable Read = *RR ou *ALL ou REPEATABLE_READ
           - Cursor Stability = *CS ou READ_COMMITTED
-          - Read Stability = *RS ou SERIALIZABLE
+          - Read Stability = *RSÃ©ou SERIALIZABLE
 
-          Valeurs définies pour le niveau d'isolation, pour PDO (mot clé "CMT" ou "CommitMode" dans le DSN) :
+          Valeurs dÃ©finies pour le niveau d'isolation, pour PDO (mot clÃ© "CMT" ou "CommitMode" dans le DSN) :
           0 = Commit immediate (*NONE)
           1 = Read committed (*CS)
           2 = Read uncommitted (*CHG)
@@ -151,7 +147,7 @@ class PDO_DB2IBMi_DBConnex {
         if (!isset($options ['i5_commit'])) {
             $options ['i5_commit'] = 0;
         } else {
-            // si valeur déjà de type numérique entier, alors on la considère comme valide et on la prend telle quelle
+            // si valeur dÃ©jÃ  de type numÃ©rique entier, alors on la considÃ¨re comme valide et on la prend telle quelle
             if (!is_int($options ['i5_commit'])) {
                 $options ['i5_commit'] = strtoupper($options ['i5_commit']);
                 switch ($options ['i5_commit']) {
@@ -176,7 +172,7 @@ class PDO_DB2IBMi_DBConnex {
                             $options ['i5_commit'] = 3;
                             break;
                         }
-                    // *CS (Read committed) 
+                    // *CS (Read committed)
                     case '*CS' :
                     case 'READ_COMMITTED' : {
                             $options ['i5_commit'] = 1;
@@ -189,7 +185,7 @@ class PDO_DB2IBMi_DBConnex {
                             break;
                         }
                     default : {
-                            // Mode NC par défaut
+                            // Mode NC par dÃ©faut
                             $options ['i5_commit'] = 0;
                         }
                 }
@@ -197,10 +193,10 @@ class PDO_DB2IBMi_DBConnex {
         }
 
         if (!isset($options ['i5_date_fmt'])) {
-            $options ['i5_date_fmt'] = 5; // format ISO par défaut
+            $options ['i5_date_fmt'] = 5; // format ISO par dÃ©faut
         } else {
-            // si valeur déjà de type numérique entier, alors on la considère comme valide et on la prend telle quelle
-            // sinon on convertit la chaîne dans la valeur numérique correspondante
+            // si valeur dÃ©jÃ  de type numÃ©rique entier, alors on la considÃ¨re comme valide et on la prend telle quelle
+            // sinon on convertit la chaÃ®ne dans la valeur numÃ©rique correspondante
             if (!is_int($options ['i5_date_fmt'])) {
                 $options ['i5_date_fmt'] = strtoupper($options ['i5_date_fmt']);
                 switch ($options ['i5_date_fmt']) {
@@ -237,7 +233,7 @@ class PDO_DB2IBMi_DBConnex {
                             break;
                         }
                     default : {
-                            // Format ISO par défaut
+                            // Format ISO par dÃ©faut
                             $options ['i5_date_fmt'] = 5;
                         }
                 }
@@ -245,10 +241,10 @@ class PDO_DB2IBMi_DBConnex {
         }
 
         if (!isset($options ['i5_date_sep'])) {
-            $options ['i5_date_sep'] = 1; //  "dash" (-) par défaut
+            $options ['i5_date_sep'] = 1; //  "dash" (-) par dÃ©faut
         } else {
-            // si valeur déjà de type numérique entier, alors on la considère comme valide et on la prend telle quelle
-            // sinon on convertit la chaîne dans la valeur numérique correspondante
+            // si valeur dÃ©jÃ  de type numÃ©rique entier, alors on la considÃ¨re comme valide et on la prend telle quelle
+            // sinon on convertit la chaÃ®ne dans la valeur numÃ©rique correspondante
             if (!is_int($options ['i5_date_sep'])) {
                 $options ['i5_date_sep'] = strtoupper($options ['i5_date_sep']);
                 switch ($options ['i5_date_sep']) {
@@ -273,7 +269,7 @@ class PDO_DB2IBMi_DBConnex {
                             break;
                         }
                     default : {
-                            //  "dash" (-) par défaut
+                            //  "dash" (-) par dÃ©faut
                             $options ['i5_date_sep'] = 1;
                         }
                 }
@@ -283,8 +279,8 @@ class PDO_DB2IBMi_DBConnex {
         if (!isset($options ['i5_time_fmt'])) {
             $options ['i5_time_fmt'] = 0; // hh:mm:ss (*HMS)
         } else {
-            // si valeur déjà de type numérique entier, alors on la considère comme valide et on la prend telle quelle
-            // sinon on convertit la chaîne dans la valeur numérique correspondante
+            // si valeur dÃ©jÃ  de type numÃ©rique entier, alors on la considÃ¨re comme valide et on la prend telle quelle
+            // sinon on convertit la chaÃ®ne dans la valeur numÃ©rique correspondante
             if (!is_int($options ['i5_time_fmt'])) {
                 $options ['i5_time_fmt'] = strtoupper($options ['i5_time_fmt']);
                 switch ($options ['i5_time_fmt']) {
@@ -317,10 +313,10 @@ class PDO_DB2IBMi_DBConnex {
         }
 
         if (!isset($options ['i5_time_sep'])) {
-            $options ['i5_time_sep'] = 0; //  "colon" (:) par défaut
+            $options ['i5_time_sep'] = 0; //  "colon" (:) par dÃ©faut
         } else {
-            // si valeur déjà de type numérique entier, alors on la considère comme valide et on la prend telle quelle
-            // sinon on convertit la chaîne dans la valeur numérique correspondante
+            // si valeur dÃ©jÃ  de type numÃ©rique entier, alors on la considÃ¨re comme valide et on la prend telle quelle
+            // sinon on convertit la chaÃ®ne dans la valeur numÃ©rique correspondante
             if (!is_int($options ['i5_time_sep'])) {
                 $options ['i5_time_sep'] = strtoupper($options ['i5_time_sep']);
                 switch ($options ['i5_time_sep']) {
@@ -341,7 +337,7 @@ class PDO_DB2IBMi_DBConnex {
                             break;
                         }
                     default : {
-                            // "colon" (:) par défaut
+                            // "colon" (:) par dÃ©faut
                             $options ['i5_time_sep'] = 0;
                         }
                 }
@@ -349,10 +345,10 @@ class PDO_DB2IBMi_DBConnex {
         }
 
         if (!isset($options ['i5_decimal_sep'])) {
-            $options ['i5_decimal_sep'] = 0; // "period" par défaut	
+            $options ['i5_decimal_sep'] = 0; // "period" par dÃ©faut
         } else {
-            // si valeur déjà de type numérique entier, alors on la considère comme valide et on la prend telle quelle
-            // sinon on convertit la chaîne dans la valeur numérique correspondante
+            // si valeur dÃ©jÃ  de type numÃ©rique entier, alors on la considÃ¨re comme valide et on la prend telle quelle
+            // sinon on convertit la chaÃ®ne dans la valeur numÃ©rique correspondante
             if (!is_int($options ['i5_decimal_sep'])) {
                 $options ['i5_decimal_sep'] = strtoupper($options ['i5_decimal_sep']);
                 switch ($options ['i5_decimal_sep']) {
@@ -365,15 +361,15 @@ class PDO_DB2IBMi_DBConnex {
                             break;
                         }
                     default : {
-                            // Séparateur par défaut
+                            // SÃ©parateur par dÃ©faut
                             $options ['i5_decimal_sep'] = 0;
                         }
                 }
             }
         }
 
-        // si valeur déjà de type numérique entier, alors on la considère comme valide et on la prend telle quelle
-        // sinon on convertit la chaîne dans la valeur numérique correspondante
+        // si valeur dÃ©jÃ  de type numÃ©rique entier, alors on la considÃ¨re comme valide et on la prend telle quelle
+        // sinon on convertit la chaÃ®ne dans la valeur numÃ©rique correspondante
         if (!is_int($options ['i5_decimal_sep'])) {
             $options ['i5_decimal_sep'] = strtoupper($options ['i5_decimal_sep']);
             switch ($options ['i5_decimal_sep']) {
@@ -386,28 +382,28 @@ class PDO_DB2IBMi_DBConnex {
                         break;
                     }
                 default : {
-                        // Séparateur par défaut
+                        // SÃ©parateur par dÃ©faut
                         $options ['i5_decimal_sep'] = 0;
                     }
             }
         }
 
         if (!isset($options ['DB2_ATTR_CASE']) && !isset($options ['db2_attr_case'])) {
-            $options ['DB2_ATTR_CASE'] = 'UPPER'; // result set avec noms de colonnes en majuscules par défaut
+            $options ['DB2_ATTR_CASE'] = 'UPPER'; // result set avec noms de colonnes en majuscules par dÃ©faut
         } else {
-            // si les 2 postes ont été créés, c'est une erreur, un peu de ménage s'impose
+            // si les 2 postes ont Ã©tÃ© crÃ©Ã©s, c'est une erreur, un peu de mÃ©nage s'impose
             if (isset($options ['DB2_ATTR_CASE']) && isset($options ['db2_attr_case'])) {
                 unset($options ['db2_attr_case']);
             } else {
-                // si le poste a été créé en minuscule, on le recrée en majuscule
+                // si le poste a Ã©tÃ© crÃ©Ã© en minuscule, on le recrÃ©e en majuscule
                 if (!isset($options ['DB2_ATTR_CASE']) && isset($options ['db2_attr_case'])) {
                     $options ['DB2_ATTR_CASE'] = $options ['db2_attr_case'];
                     unset($options ['db2_attr_case']);
                 }
             }
-            // les 3 valeurs possibles sont UPPER, LOWER et NATURAL, donc peu importe la manière dont ces valeurs ont été saisies
-            // (exemples : DB2_CASE_UPPER, CASE_UPPER, ou UPPER, en majuscules ou minuscules), on normalise les valeurs à 
-            // UPPER, LOWER et NATURAL, pour faciliter leur transmission à PDO.
+            // les 3 valeurs possibles sont UPPER, LOWER et NATURAL, donc peu importe la maniÃ©re dont ces valeurs ont Ã©tÃ© saisies
+            // (exemples : DB2_CASE_UPPER, CASE_UPPER, ou UPPER, en majuscules ou minuscules), on normalise les valeurs Ã©
+            // UPPER, LOWER et NATURAL, pour faciliter leur transmission Ã  PDO.
             $search_attr_case = stripos('UPPER', $options ['DB2_ATTR_CASE']);
             if ($search_attr_case !== false) {
                 $options ['DB2_ATTR_CASE'] = 'UPPER';
@@ -472,15 +468,15 @@ class PDO_DB2IBMi_DBConnex {
                 $option_ccsid = '1208';
             }
             $array_dsn [] = 'CCSID=' . $option_ccsid;
-        }        
+        }
         $dsn = implode(';', $array_dsn);
 
         return $dsn;
     }
 
     /*
-     * renvoie le séparateur SQL à utiliser en fonction du type de nommage déclaré
-     * ( nommage SQL => "."  ; ou nommage Système IBM i => "/" ) 
+     * renvoie le sÃ©parateur SQL Ã  utiliser en fonction du type de nommage dÃ©clarÃ©
+     * ( nommage SQL => "."  ; ou nommage SystÃ©me IBM i => "/" )
      */
 
     public static function getSqlSeparator() {
@@ -488,4 +484,3 @@ class PDO_DB2IBMi_DBConnex {
     }
 
 }
-
